@@ -4,7 +4,7 @@ RUN mkdir /config
 RUN apt-get update && apt-get install -y jq
 
 # Fetch the version string and set it as an environment variable to break cache
-RUN VERSION=$(wget -q -O - https://api.github.com/repos/jagrosh/MusicBot/releases/latest | jq -r '.tag_name') && echo $VERSION > /tmp/version.txt
+RUN echo $(wget -q -O - https://api.github.com/repos/jagrosh/MusicBot/releases/latest | jq -r '.tag_name') > /tmp/version.txt
 ENV VERSION=$(cat /tmp/version.txt)
 
 RUN wget -q -O - https://api.github.com/repos/jagrosh/MusicBot/releases/latest | jq -r '.assets[] | select(.name | contains("jar")) | .browser_download_url' | xargs wget -O JMusicBot.jar
