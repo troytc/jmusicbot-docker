@@ -34,7 +34,8 @@ jobs:
       id-token: write
 
     steps:
-      - name: Check latest GitHub release timestamp
+      - name: Check Latest Release
+        if: github.event_name != 'workflow_dispatch'
         id: check_release_time
         run: |
           # Get the latest release timestamp
@@ -55,8 +56,14 @@ jobs:
           echo "Time difference: $time_difference hours"
           echo "::set-output name=latest_version::$latest_version"
           echo "::set-output name=should_build::$(( time_difference < 24 ))"
+
+      - name: Check Manual Trigger
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Manual trigger detected. Forcing build."
+          echo "::set-output name=should_build::1"
           
-      - name: Checkout repository
+      - name: Checkout Repository
         if: steps.check_release_time.outputs.should_build == '1'
         uses: actions/checkout@v3
 
@@ -69,7 +76,7 @@ jobs:
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Log Into Registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request' && steps.check_release_time.outputs.should_build == '1'
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
@@ -79,7 +86,7 @@ jobs:
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
+      - name: Extract Docker Metadata
         if: steps.check_release_time.outputs.should_build == '1'
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
@@ -88,7 +95,7 @@ jobs:
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
-      - name: Build and push Docker image
+      - name: Build and push Docker Image
         if: steps.check_release_time.outputs.should_build == '1'
         id: build-and-push
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
