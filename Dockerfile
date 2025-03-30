@@ -1,10 +1,10 @@
 FROM openjdk:11
 
 RUN mkdir /config
-RUN apt-get update -qq -y && apt-get install -y wget xvfb unzip libasound2 libatk-bridge2.0.0 libgtk-4-1 libnss3 xdg-utils
+RUN apt-get update -qq -y && apt-get install -y wget xvfb unzip libasound2 libatk-bridge2.0.0 libnss3 xdg-utils
 
-RUN wget -q -O chrome-linux64.zip "https://bit.ly/chrome-linux64-121-0-6167-85"
-RUN wget -q -O chromedriver-linux64.zip "https://bit.ly/chromedriver-linux64-121-0-6167-85"
+RUN wget -q -O chrome-linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
+RUN wget -q -O chromedriver-linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
 RUN unzip chrome-linux64.zip && rm chrome-linux64.zip
 RUN mv chrome-linux64 /opt/chrome/ && ln -s /opt/chrome/chrome /usr/local/bin/
 RUN unzip -j chromedriver-linux64.zip chromedriver-linux64/chromedriver && rm chromedriver-linux64.zip
