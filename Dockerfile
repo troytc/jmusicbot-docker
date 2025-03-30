@@ -1,6 +1,5 @@
 FROM zenika/alpine-chrome:with-chromedriver
 
-RUN mkdir /config
 RUN  apk update \
   && apk upgrade \
   && apk add --update openjdk11 tzdata curl unzip bash \
