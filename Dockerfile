@@ -1,7 +1,14 @@
-FROM markhobson/maven-chrome:jdk-11
+FROM openjdk:11
 
 RUN mkdir /config
-RUN apt-get update && apt-get install -y jq
+RUN apt-get update -qq -y && apt-get install -y wget xvfb unzip libasound2 libatk-bridge2.0.0 libgtk-4-1 libnss3 xdg-utils
+
+RUN wget -q -O chrome-linux64.zip "https://bit.ly/chrome-linux64-121-0-6167-85"
+RUN wget -q -O chromedriver-linux64.zip "https://bit.ly/chromedriver-linux64-121-0-6167-85"
+RUN unzip chrome-linux64.zip && rm chrome-linux64.zip
+RUN mv chrome-linux64 /opt/chrome/ && ln -s /opt/chrome/chrome /usr/local/bin/
+RUN unzip -j chromedriver-linux64.zip chromedriver-linux64/chromedriver && rm chromedriver-linux64.zip
+RUN mv chromedriver /usr/local/bin/
 
 # Load the version variable into the environment
 RUN wget -q "https://cdn.discordapp.com/attachments/185037029384388608/1354532723049627649/JMusicBot-cd40e2e5-potoken-iprotation.jar?ex=67e996e7&is=67e84567&hm=71a1014068c48a1a6ac5a5bc2f9154b1ec9d4cbb09c18ecceb46906ca1836d19&" -O JMusicBot.jar
